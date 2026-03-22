@@ -105,4 +105,12 @@ public class EmployeeController {
         return Result.success();
     }
 
+    @ApiOperation("回显员工")
+    @GetMapping("/{id}")
+    public Result<Employee> getById(@PathVariable Long id) {
+        log.info("回显员工: {}",id);
+        Employee employee = employeeService.getById(id);
+        return Result.success(employee);
+    }
+
 }

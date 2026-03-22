@@ -24,4 +24,6 @@ public interface EmployeeService {
     PageResult page(EmployeePageQueryDTO dto);
 
     void enableOrDisable(Integer status, Long id);
+
+    Employee getById(Long id);
 }
