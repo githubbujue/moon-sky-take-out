@@ -36,4 +36,7 @@ public interface DishMapper {
     Dish selectId(Long dishId);
 
     void deleteBatch(List<Long> ids);
+
+    @AutoFill(OperationType.UPDATE)
+    void update(Dish dish);
 }
