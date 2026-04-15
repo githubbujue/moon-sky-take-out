@@ -30,7 +30,6 @@ public interface DishMapper {
 //            " #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})")
     void insert(Dish dish);
 
-
     Page<DishVO> list(DishPageQueryDTO dto);
 
     Dish selectId(Long dishId);
@@ -39,4 +38,10 @@ public interface DishMapper {
 
     @AutoFill(OperationType.UPDATE)
     void update(Dish dish);
+
+    List<Dish> listByCategoryId(Dish dish);
+
+    List<Dish> getBySetmealId(Long id);
+
+    List<Dish> listBy(Dish dish);
 }
