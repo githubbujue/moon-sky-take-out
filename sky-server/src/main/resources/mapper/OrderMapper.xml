@@ -42,6 +42,41 @@
         </set>
         where id = #{id}
     </update>
+    <update id="updateBatch">
+        update orders
+        <foreach collection="ordersList" item="ol" separator=", ">
+            <set>
+                <if test="ol.cancelReason != null and ol.cancelReason!=''">
+                    cancel_reason = #{ol.cancelReason},
+                </if>
+                <if test="ol.rejectionReason != null and ol.rejectionReason!=''">
+                    rejection_reason = #{ol.rejectionReason},
+                </if>
+                <if test="ol.cancelTime != null">
+                    cancel_time = #{ol.cancelTime},
+                </if>
+                <if test="ol.payStatus != null">
+                    pay_status = #{ol.payStatus},
+                </if>
+                <if test="ol.payMethod != null">
+                    pay_method = #{ol.payMethod},
+                </if>
+                <if test="ol.checkoutTime != null">
+                    checkout_time = #{ol.checkoutTime},
+                </if>
+                <if test="ol.status != null">
+                    status = #{ol.status},
+                </if>
+                <if test="ol.deliveryTime != null">
+                    delivery_time = #{ol.deliveryTime}
+                </if>
+            </set>
+        </foreach>
+        where
+        <foreach collection="ordersList" item="ol">
+            id = #{ol.id}
+        </foreach>
+    </update>
     <select id="pageQuery" resultType="com.sky.entity.Orders">
         select * from orders
         <where>
@@ -71,5 +106,8 @@
     </select>
     <select id="countStatue" resultType="java.lang.Integer">
         select count(*) from orders where status = #{status}
+    </select>
+    <select id="getByStatusAndOrderTimeLT" resultType="com.sky.entity.Orders">
+        select * from orders where status = #{status} and order_time &lt; #{orderTime}
     </select>
 </mapper>
