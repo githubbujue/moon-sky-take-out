@@ -43,13 +43,13 @@
         where id = #{id}
     </update>
     <update id="updateBatch">
-        update orders
-        <foreach collection="ordersList" item="ol" separator=", ">
+        <foreach collection="ordersList" item="ol" separator="; ">
+            update orders
             <set>
-                <if test="ol.cancelReason != null and ol.cancelReason!=''">
+                <if test="ol.cancelReason != null and ol.cancelReason != ''">
                     cancel_reason = #{ol.cancelReason},
                 </if>
-                <if test="ol.rejectionReason != null and ol.rejectionReason!=''">
+                <if test="ol.rejectionReason != null and ol.rejectionReason != ''">
                     rejection_reason = #{ol.rejectionReason},
                 </if>
                 <if test="ol.cancelTime != null">
@@ -71,10 +71,7 @@
                     delivery_time = #{ol.deliveryTime}
                 </if>
             </set>
-        </foreach>
-        where
-        <foreach collection="ordersList" item="ol">
-            id = #{ol.id}
+            where id = #{ol.id}
         </foreach>
     </update>
     <select id="pageQuery" resultType="com.sky.entity.Orders">
@@ -110,4 +107,51 @@
     <select id="getByStatusAndOrderTimeLT" resultType="com.sky.entity.Orders">
         select * from orders where status = #{status} and order_time &lt; #{orderTime}
     </select>
+    <select id="sumByMap" resultType="java.lang.Double">
+        select sum(amount) from orders
+        <where>
+            <if test="begin != null">
+                and order_time &gt; #{begin}
+            </if>
+            <if test="end != null">
+                and order_time &lt; #{end}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="countByMap" resultType="java.lang.Integer">
+        select count(*) from orders
+        <where>
+            <if test="begin != null">
+                and order_time
+                &gt;
+                #{begin}
+            </if>
+            <if test="end != null">
+                and order_time
+                &lt;
+                #{end}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="getSalesTop10" resultType="com.sky.dto.GoodsSalesDTO">
+        select od.name, sum(od.number) as saleCount
+        from order_detail od, orders o
+        where od.order_id = o.id and o.status = 5
+        <if test="begin != null">
+            and o.order_time &gt; #{begin}
+        </if>
+        <if test="end != null">
+            and o.order_time &lt; #{end}
+        </if>
+        group by od.name
+        order by saleCount desc
+        limit 10
+    </select>
+
 </mapper>
